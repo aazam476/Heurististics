@@ -1,16 +1,28 @@
-import { useState } from "react";
+"use client";
+
+import { ChangeEvent, useState } from "react";
 import InputBar from "./InputBar";
 
 export interface IPayload {
-    v1: string,
-    v2: string
+    testType: string,
+    hypothesisMean: number,
+    sampleStdDev: number,
+    sampleMean: number,
+    sampleSize: number,
+    alternativeHypothesis: string,
+    alternativeHypothesisType: string
 }
 
-export default function OneSample()
+export default function OneSample({testType}:{testType:string})
 {
-    const [ payload, setPayload ] = useState<IPayload>({
-        v1: "",
-        v2: ""
+    const [ payload, modfiyPayload ] = useState<IPayload>({
+        testType: testType,
+        hypothesisMean: 0,
+        sampleStdDev: 0,
+        sampleMean: 0,
+        sampleSize: 0,
+        alternativeHypothesis: "N/A",
+        alternativeHypothesisType: "N/A"
     });
 
     return (
@@ -32,7 +44,12 @@ export default function OneSample()
                 className="aspect-[1920/1080] w-[100rem] bg-gradient-to-tr from-[#ff4694] to-[#776fff] opacity-20"
             />
             </div>
-            <InputBar onPayload={setPayload} value=""></InputBar>
+            <InputBar payload = {payload} modifyPayload={
+                (event: ChangeEvent<HTMLInputElement>, payload: IPayload) => {
+                    console.log(event.target.value)
+                    payload.sampleMean = event.target.valueAsNumber;
+                }
+            }></InputBar>
         </div>
     )
 }
