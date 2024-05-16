@@ -1,0 +1,144 @@
+openapi: 3.0.3
+info:
+  version: 1.0.0
+  title: Heurististics
+  license:
+    name: GPL-3.0
+servers:
+  - url: 'http://heurististics.azamserver.com'
+paths:
+  /oneSampletest:
+    post:
+      summary: Create One Sample Test PDF
+      requestBody:
+        required: true
+        content:
+          application/json:
+            schema:
+              $ref: '#/components/schemas/oneSampleTestRequest'
+      responses:
+        '200':
+          description: Successful operation
+          content:
+            application/json:
+              schema:
+                $ref: '#/components/schemas/response'
+        '400':
+          description: Missing required parameters
+        '500':
+          description: Internal server error
+  /twoSampletest:
+    post:
+      summary: Create Two Sample Test PDF
+      requestBody:
+        required: true
+        content:
+          application/json:
+            schema:
+              $ref: '#/components/schemas/twoSampleTestRequest'
+      responses:
+        '200':
+          description: Successful operation
+          content:
+            application/json:
+              schema:
+                $ref: '#/components/schemas/response'
+        '400':
+          description: Missing required parameters
+        '500':
+          description: Internal server error
+
+components:
+  schemas:
+    oneSampleTestRequest:
+      type: object
+      properties:
+        testType:
+          description: Type of test
+          type: string
+          enum:
+            - z
+            - t
+        hypothesisMean:
+          description: Type of test
+          type: number
+        sampleStdDev:
+          description: Standard deviation of sample
+          type: number
+        sampleMean:
+          description: Mean of sample
+          type: number
+        sampleSize:
+          description: Size of sample
+          type: integer
+        alternativeHypothesis:
+          description: Alternative hypothesis
+          type: string
+        alternativeHypothesisType:
+          description: Type of alternative hypothesis
+          type: string
+          enum:
+            - =
+            - <
+            - >
+      required:
+        - testType
+        - hypothesisMean
+        - sampleStdDev
+        - sampleMean
+        - sampleSize
+        - alternativeHypothesis
+        - alternativeHypothesisType
+    twoSampleTestRequest:
+      type: object
+      properties:
+        testType:
+          description: Type of test
+          type: string
+          enum:
+            - z
+            - t
+        sampleOneStdDev:
+          description: Standard deviation of sample one
+          type: number
+        sampleOneMean:
+          description: Mean of sample one
+          type: number
+        sampleOneSize:
+          description: Size of sample one
+          type: integer
+        sampleTwoStdDev:
+          description: Standard deviation of sample two
+          type: number
+        sampleTwoMean:
+          description: Mean of sample two
+          type: number
+        sampleTwoSize:
+          description: Size of sample two
+          type: integer
+        alternativeHypothesis:
+          description: Alternative hypothesis
+          type: string
+        alternativeHypothesisType:
+          description: Type of alternative hypothesis
+          type: string
+          enum:
+            - =
+            - <
+            - >
+      required:
+        - testType
+        - sampleOneStdDev
+        - sampleOneMean
+        - sampleOneSize
+        - sampleTwoStdDev
+        - sampleTwoMean
+        - sampleTwoSize
+        - alternativeHypothesis
+        - alternativeHypothesisType
+    response:
+      type: object
+      properties:
+        pdf:
+          description: Base64 string of generated PDF
+          type: string
