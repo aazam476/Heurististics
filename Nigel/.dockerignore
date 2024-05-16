@@ -1,0 +1,7 @@
+.DS_Store
+node_modules
+src
+api.yaml
+docker-compose.yml
+Dockerfile
+tsconfig.json
