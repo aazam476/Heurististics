@@ -25,6 +25,12 @@ export default function OneSample({testType}:{testType:string})
         alternativeHypothesisType: "N/A"
     });
 
+    const modSampleMean = 
+        (event: ChangeEvent<HTMLInputElement>, payload: IPayload) => {
+            console.log(event.target.value)
+            payload.sampleMean = event.target.valueAsNumber;
+        }
+
     return (
 
         <div className="relative isolate overflow-hidden bg-gray-900 py-24 sm:py-32 sm:p-100">
@@ -44,12 +50,9 @@ export default function OneSample({testType}:{testType:string})
                 className="aspect-[1920/1080] w-[100rem] bg-gradient-to-tr from-[#ff4694] to-[#776fff] opacity-20"
             />
             </div>
-            <InputBar payload = {payload} modifyPayload={
-                (event: ChangeEvent<HTMLInputElement>, payload: IPayload) => {
-                    console.log(event.target.value)
-                    payload.sampleMean = event.target.valueAsNumber;
-                }
-            }></InputBar>
+            <div className="flex-auto">
+                <InputBar payload = {payload} modifyPayload={modSampleMean}></InputBar>
+            </div>
         </div>
     )
 }
