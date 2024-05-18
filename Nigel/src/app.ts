@@ -2,6 +2,7 @@ import express from 'express';
 import morgan from 'morgan';
 import http from 'http';
 import logger from './logger';
+import oneSampleTestRoutes from "./oneSampleTestRoutes";
 
 async function startServer() {
     try {
@@ -15,6 +16,8 @@ async function startServer() {
         }));
 
         app.use(express.json());
+
+        app.use("/oneSampleTest", oneSampleTestRoutes);
 
         const port = parseInt(process.env.PORT) || 3000;
         return app.listen(port, () => {

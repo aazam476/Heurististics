@@ -5,17 +5,17 @@ info:
   license:
     name: GPL-3.0
 servers:
-  - url: 'http://heurististics.azamserver.com'
+  - url: 'https://heurististics.azamserver.com/api'
 paths:
-  /oneSampletest:
+  /oneSampleTest/zTest:
     post:
-      summary: Create One Sample Test PDF
+      summary: Create One Sample Z-Test PDF
       requestBody:
         required: true
         content:
           application/json:
             schema:
-              $ref: '#/components/schemas/oneSampleTestRequest'
+              $ref: '#/components/schemas/oneSampleZTestRequest'
       responses:
         '200':
           description: Successful operation
@@ -24,18 +24,18 @@ paths:
               schema:
                 $ref: '#/components/schemas/response'
         '400':
-          description: Missing required parameters
+          description: Faulty request, check JSON body
         '500':
           description: Internal server error
-  /twoSampletest:
+  /oneSampleTest/tTest:
     post:
-      summary: Create Two Sample Test PDF
+      summary: Create One Sample T-Test PDF
       requestBody:
         required: true
         content:
           application/json:
             schema:
-              $ref: '#/components/schemas/twoSampleTestRequest'
+              $ref: '#/components/schemas/oneSampleTTestRequest'
       responses:
         '200':
           description: Successful operation
@@ -44,33 +44,36 @@ paths:
               schema:
                 $ref: '#/components/schemas/response'
         '400':
-          description: Missing required parameters
+          description: Faulty request, check JSON body
         '500':
           description: Internal server error
 
 components:
   schemas:
-    oneSampleTestRequest:
+    oneSampleZTestRequest:
       type: object
       properties:
-        testType:
-          description: Type of test
-          type: string
-          enum:
-            - z
-            - t
-        hypothesisMean:
-          description: Type of test
-          type: number
-        sampleStdDev:
-          description: Standard deviation of sample
+        hypothesizedMean:
+          description: Hypothesized proportion (p not)
           type: number
         sampleMean:
           description: Mean of sample
           type: number
         sampleSize:
           description: Size of sample
+          type: number
+        sampleType:
+          description: Description of what the sample is (ex. apples)
+          type: string
+        populationStdDev:
+          description: Standard deviation of population
           type: integer
+        populationSize:
+          description: Size of population
+          type: integer
+        nullHypothesis:
+          description: Null hypothesis
+          type: string
         alternativeHypothesis:
           description: Alternative hypothesis
           type: string
@@ -78,44 +81,46 @@ components:
           description: Type of alternative hypothesis
           type: string
           enum:
-            - =
+            - ≠
             - <
             - >
       required:
-        - testType
-        - hypothesisMean
-        - sampleStdDev
+        - hypothesizedProportion
         - sampleMean
         - sampleSize
+        - populationStdDev
+        - nullHypothesis
         - alternativeHypothesis
         - alternativeHypothesisType
-    twoSampleTestRequest:
+      oneOf:
+        - required:
+            - sampleType
+        - required:
+            - populationSize
+    oneSampleTTestRequest:
       type: object
       properties:
-        testType:
-          description: Type of test
+        hypothesizedMean:
+          description: Hypothesized proportion (theta)
+          type: number
+        sampleMean:
+          description: Mean of sample
+          type: number
+        sampleStdDev:
+          description: Standard deviation of sample
+          type: number
+        sampleSize:
+          description: Size of sample
+          type: integer
+        sampleType:
+          description: Description of what the sample is (ex. apples)
           type: string
-          enum:
-            - z
-            - t
-        sampleOneStdDev:
-          description: Standard deviation of sample one
-          type: number
-        sampleOneMean:
-          description: Mean of sample one
-          type: number
-        sampleOneSize:
-          description: Size of sample one
+        populationSize:
+          description: Size of population
           type: integer
-        sampleTwoStdDev:
-          description: Standard deviation of sample two
-          type: number
-        sampleTwoMean:
-          description: Mean of sample two
-          type: number
-        sampleTwoSize:
-          description: Size of sample two
-          type: integer
+        nullHypothesis:
+          description: Null hypothesis
+          type: string
         alternativeHypothesis:
           description: Alternative hypothesis
           type: string
@@ -123,19 +128,24 @@ components:
           description: Type of alternative hypothesis
           type: string
           enum:
-            - =
+            - ≠
             - <
             - >
       required:
-        - testType
-        - sampleOneStdDev
-        - sampleOneMean
-        - sampleOneSize
-        - sampleTwoStdDev
-        - sampleTwoMean
-        - sampleTwoSize
+        - hypothesizedMean
+        - sampleMean
+        - sampleStdDev
+        - sampleSize
+        - sampleType
+        - populationSize
+        - nullHypothesis
         - alternativeHypothesis
         - alternativeHypothesisType
+      oneOf:
+        - required:
+            - sampleType
+        - required:
+            - populationSize
     response:
       type: object
       properties:
