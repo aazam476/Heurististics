@@ -15,7 +15,7 @@ const links = [
           aria-hidden="true"
         >
           <div
-            className="aspect-[1920/1080] w-[100rem] bg-gradient-to-tr from-[#ff4694] to-[#776fff] opacity-20"
+            className="aspect-[1920/1080] w-[100rem] bg-gradient-to-tr from-[#ff4694] to-[#776fff] opacity-40"
           />
         </div>
         <div
@@ -23,7 +23,7 @@ const links = [
           aria-hidden="true"
         >
           <div
-            className="aspect-[1920/1080] w-[100rem] bg-gradient-to-tr from-[#ff4694] to-[#776fff] opacity-20"
+            className="aspect-[1920/1080] w-[100rem] bg-gradient-to-tr from-[#ff4694] to-[#776fff] opacity-40"
           />
         </div>
         <div className="mx-auto max-w-7xl px-6 lg:px-8">
