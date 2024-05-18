@@ -3,20 +3,7 @@
 import { ChangeEvent, useId, useState } from 'react';
 import { IPayload } from './OneSample';
 
-/*
-  This example requires some changes to your config:
-  
-  ```
-  // tailwind.config.js
-  module.exports = {
-    // ...
-    plugins: [
-      // ...
-      require('@tailwindcss/forms'),
-    ],
-  }
-  ```
-*/
+
 export function NumberInputBar({ modifyPayload, payload, label, placeholder}
   : {payload: IPayload, modifyPayload: (event: ChangeEvent<HTMLInputElement>, payload: IPayload) => void, label:string, placeholder:number }) {
 
@@ -47,7 +34,7 @@ export function NumberInputBar({ modifyPayload, payload, label, placeholder}
   }
 
 export function TextInputArea({ modifyPayload, payload, label, placeholder}
-  : {payload: IPayload, modifyPayload: (event: ChangeEvent<HTMLInputElement>, payload: IPayload) => void, label:string, placeholder:string }) {
+  : {payload: IPayload, modifyPayload: (event: ChangeEvent<HTMLTextAreaElement>, payload: IPayload) => void, label:string, placeholder:string }) {
 
   const id = useId();
   const [input, onChange] = useState<string>("");
