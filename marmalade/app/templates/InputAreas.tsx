@@ -1,17 +1,17 @@
 "use client";
 
 import { ChangeEvent, useId, useState } from 'react';
-import { IPayload } from './OneSample';
+import { IOneSampPayload } from './OneSample';
 
 
 export function NumberInputBar({ modifyPayload, payload, label, placeholder}
-  : {payload: IPayload, modifyPayload: (event: ChangeEvent<HTMLInputElement>, payload: IPayload) => void, label:string, placeholder:number }) {
+  : {payload: IOneSampPayload, modifyPayload: (event: ChangeEvent<HTMLInputElement>, payload: IOneSampPayload) => void, label:string, placeholder:number }) {
 
   const id = useId();
   const [input, onChange] = useState<string>("");
   
   return (
-      <div className="object-fill p-4">
+      <div className="object-fill p-4 w-1/5">
         <label htmlFor={id} className="block text-xl leading-6 text-white">
           {label}
         </label>
@@ -34,7 +34,7 @@ export function NumberInputBar({ modifyPayload, payload, label, placeholder}
   }
 
 export function TextInputArea({ modifyPayload, payload, label, placeholder}
-  : {payload: IPayload, modifyPayload: (event: ChangeEvent<HTMLTextAreaElement>, payload: IPayload) => void, label:string, placeholder:string }) {
+  : {payload: IOneSampPayload, modifyPayload: (event: ChangeEvent<HTMLTextAreaElement>, payload: IOneSampPayload) => void, label:string, placeholder:string }) {
 
   const id = useId();
   const [input, onChange] = useState<string>("");

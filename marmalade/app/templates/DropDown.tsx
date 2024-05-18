@@ -1,12 +1,14 @@
 import { ChangeEvent, useId, useState } from "react";
-import { IPayload } from "./OneSample";
+import { IOneSampPayload } from "./OneSample";
 
 export default function DropDown({ modifyPayload, payload, label, options}
-    : {payload: IPayload, modifyPayload: (event: ChangeEvent<HTMLSelectElement>, payload: IPayload) => void, label:string, options:string[] })
+    : {payload: IOneSampPayload, modifyPayload: (event: ChangeEvent<HTMLSelectElement>, payload: IOneSampPayload) => void, label:string, options:string[] })
     {
 
         const id = useId();
         const [input, onChange] = useState<string>("");
+
+        let i = 0
 
         return (
             <div className="object-fill">
@@ -17,6 +19,7 @@ export default function DropDown({ modifyPayload, payload, label, options}
                     <select className="block appearance-none my-1.5 w-full bg-gray-200 border border-gray-200
                         text-gray-700 p-3 rounded leading-tight focus:outline-none focus:bg-white focus:border-gray-500"
                         id={id}
+                        key={options[i++]}
                         onChange={e =>{
                             onChange(e.target.value)
                             modifyPayload(e, payload)
