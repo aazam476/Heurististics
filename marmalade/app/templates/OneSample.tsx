@@ -10,12 +10,13 @@ import ErrorBar from "./ErrorBar";
 import ApiCall from "../scripts/ApiCall";
 
 export interface IOneSampPayload {
-    hypothesisMean: number,
+    hypothesizedMean: number,
     sampleMean: number,
     sampleStdDev: number,
     sampleSize: number,
     populationSize: number,
     nullHypothesis: string,
+    sampleType: string,
     alternativeHypothesis: string,
     alternativeHypothesisType: string
 }
@@ -23,12 +24,13 @@ export interface IOneSampPayload {
 export default function OneSample({testType}:{testType:string}) {
     
     const [ payload, modfiyPayload ] = useState<IOneSampPayload>({
-        hypothesisMean: 0,
+        hypothesizedMean: 0,
         sampleStdDev: 0,
         sampleMean: 0,
         sampleSize: 0,
         populationSize: 0,
         nullHypothesis: "",
+        sampleType: "",
         alternativeHypothesis: "",
         alternativeHypothesisType: "<",
     })
@@ -39,45 +41,42 @@ export default function OneSample({testType}:{testType:string}) {
 
     const modSampleMean = (
         event: ChangeEvent<HTMLInputElement>, payload: IOneSampPayload) => {
-            console.log(event.target.value)
             payload.sampleMean = parseFloat(event.target.value);
         }
 
     const modHypothesisMean = (
         event: ChangeEvent<HTMLInputElement>, payload: IOneSampPayload) => {
-            console.log(event.target.value)
-            payload.hypothesisMean = parseFloat(event.target.value);
+            payload.hypothesizedMean = parseFloat(event.target.value);
         }
 
     const modStdDev = (
         event: ChangeEvent<HTMLInputElement>, payload: IOneSampPayload) => {
-            console.log(event.target.value)
             payload.sampleStdDev = parseFloat(event.target.value)
         }
 
     const modSampleSize = (
         event: ChangeEvent<HTMLInputElement>, payload: IOneSampPayload) => {
-            console.log(event.target.value)
             payload.sampleSize = parseInt(event.target.value);
         }
 
     const modPopulationSize = (
             event: ChangeEvent<HTMLInputElement>, payload: IOneSampPayload) => {
-                console.log(event.target.value)
                 payload.populationSize = parseInt(event.target.value);
             }
 
     const modNullHypothesis = (
         event: ChangeEvent<HTMLTextAreaElement>, payload: IOneSampPayload) => {
-            console.log(event.target.value)
             payload.nullHypothesis = event.target.value;
         }
 
     const modAlternativeHypothesis = (
         event: ChangeEvent<HTMLTextAreaElement>, payload: IOneSampPayload) => {
-            console.log(event.target.value)
             payload.alternativeHypothesis = event.target.value;
-            console.log(payload);
+        }
+
+    const modSampleType = (
+        event: ChangeEvent<HTMLTextAreaElement>, payload: IOneSampPayload) => {
+            payload.sampleType = event.target.value;
         }
 
     const alternativeHypothesisOptions = [
@@ -88,7 +87,6 @@ export default function OneSample({testType}:{testType:string}) {
 
     const modAlternativeHypothesisType = (
         event: ChangeEvent<HTMLSelectElement>, payload: IOneSampPayload) => {
-            console.log(event.target.value)
             payload.alternativeHypothesisType = event.target.value;
         }
     
@@ -97,14 +95,13 @@ export default function OneSample({testType}:{testType:string}) {
 
     const handleOutput = (
         event: any) => {
-
             let arr = Object.values(payload)
             let numbers = (arr.filter((obj) => typeof obj === "number") as number[])
             let validNums:boolean = numbers.every((val) => !isNaN(val)) && payload.sampleSize != 0 && payload.populationSize != 0 && payload.sampleStdDev != 0
             let validText:boolean = arr.filter((obj) => typeof obj === "string").every((val) => !!val)
 
             if (validNums && validText) {
-                ApiCall(payload)
+                ApiCall(payload, testType)
                 modifyPdfInfo(base64STR)
             }
             else
@@ -124,7 +121,7 @@ export default function OneSample({testType}:{testType:string}) {
                 />
             </div>
             <div className="flex flex-wrap px-20 pt-20 size-screen w-screen">
-                <NumberInputBar payload = {payload} modifyPayload={modHypothesisMean} label="Hypothesis Mean" placeholder={payload.hypothesisMean}></NumberInputBar>
+                <NumberInputBar payload = {payload} modifyPayload={modHypothesisMean} label={`Hypothesis ${testType === 'z' ? "Proportion" : "Mean"}`} placeholder={payload.hypothesizedMean}></NumberInputBar>
                 <NumberInputBar payload = {payload} modifyPayload={modSampleMean} label="Sample Mean" placeholder={payload.sampleMean}></NumberInputBar>
                 <NumberInputBar payload = {payload} modifyPayload={modStdDev} label="Standard Deviation" placeholder={payload.sampleStdDev}></NumberInputBar>
                 <NumberInputBar payload = {payload} modifyPayload={modSampleSize} label="Sample Size" placeholder={payload.sampleSize}></NumberInputBar>
@@ -133,6 +130,7 @@ export default function OneSample({testType}:{testType:string}) {
             <div className="flex px-20 pt-14 size-screen w-screen">
                 <TextInputArea payload = {payload} modifyPayload={modNullHypothesis} label="Null Hypothesis" placeholder={payload.nullHypothesis}></TextInputArea>
                 <TextInputArea payload = {payload} modifyPayload={modAlternativeHypothesis} label="Alternative Hypothesis" placeholder={payload.alternativeHypothesis}></TextInputArea>
+                <TextInputArea payload = {payload} modifyPayload={modSampleType} label="What's Being Sampled?" placeholder={payload.sampleType}></TextInputArea>
             </div>
             <div className="flex px-20 mx-4 pt-14 size-3/12">
                 <DropDown payload={payload} modifyPayload={modAlternativeHypothesisType} label="Alternative Hypothesis Type" options={alternativeHypothesisOptions}></DropDown>

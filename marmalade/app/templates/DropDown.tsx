@@ -7,9 +7,7 @@ export default function DropDown({ modifyPayload, payload, label, options}
 
         const id = useId();
         const [input, onChange] = useState<string>("");
-
         let i = 0
-
         return (
             <div className="object-fill">
                 <label className="block text-xl leading-6 text-white" htmlFor={id}>
@@ -19,13 +17,12 @@ export default function DropDown({ modifyPayload, payload, label, options}
                     <select className="block appearance-none my-1.5 w-full bg-gray-200 border border-gray-200
                         text-gray-700 p-3 rounded leading-tight focus:outline-none focus:bg-white focus:border-gray-500"
                         id={id}
-                        key={options[i++]}
                         onChange={e =>{
                             onChange(e.target.value)
                             modifyPayload(e, payload)
                         }}>
                     {options.map((option) => (
-                        <option>{option}</option>
+                        <option key={options[i++]}>{option}</option>
                     ))}
                     </select>
                 </div>

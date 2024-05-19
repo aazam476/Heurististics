@@ -12,7 +12,7 @@ export function NumberInputBar({ modifyPayload, payload, label, placeholder}
   
   return (
       <div className="object-fill p-4 w-1/5">
-        <label htmlFor={id} className="block text-xl leading-6 text-white">
+        <label htmlFor={id} className="bl6ck text-xl leading-6 text-white">
           {label}
         </label>
         <div className="relative mt-2 rounded-md shadow-sm">
@@ -40,7 +40,7 @@ export function TextInputArea({ modifyPayload, payload, label, placeholder}
   const [input, onChange] = useState<string>("");
   
   return (
-      <div className="object-fill p-4 w-5/12">
+      <div className="object-fill p-4 w-4/12">
         <label htmlFor={id} className="block text-xl leading-6 text-white">
           {label}
         </label>
