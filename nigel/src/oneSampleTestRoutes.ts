@@ -22,7 +22,7 @@ router.post('/tTest', async (req, res) => {
 async function handleRequest(testType: 'z' | 't', req: Request, res: Response, requiredParams: string[]) {
     logRequest(testType, req);
 
-    if (!paramsExist(req, requiredParams)) {
+    if (!paramsExist(req, requiredParams) || !paramsExist(req, [ "populationSize" ]) && !paramsExist(req, [ "sampleType" ])) {
         return logResponse(res, req.body.UUID, req.body.IP, 400, {reason: "missing required parameters"});
     }
 
@@ -33,11 +33,6 @@ async function handleRequest(testType: 'z' | 't', req: Request, res: Response, r
     } = req.body;
 
     const stdDev = testType === 'z' ? populationStdDev : sampleStdDev;
-
-    const requestCheckResult = checkRequest(testType, populationSize, sampleSize, hypothesizedMean);
-    if (typeof requestCheckResult === 'string') {
-        return logResponse(res, req.body.UUID, req.body.IP, 400, {reason: requestCheckResult});
-    }
 
     const doc = await performTest(
         testType, hypothesizedMean, sampleMean, stdDev, sampleSize,
@@ -74,42 +69,23 @@ async function performTest(
     }
 }
 
-function checkRequest(testType: 'z' | 't', populationSize: number, sampleSize: number, hypothesizedMean: number) {
-    if (populationSize) {
-        if (sampleSize * 10 >= populationSize) {
-            return "the sample size is bigger than 1/10th the population size";
-        }
-    }
-
-    if (testType === 'z') {
-        if (hypothesizedMean * sampleSize < 10) {
-            return "the hypothesized proportion times the sample size is less than 10";
-        }
-        if ((1 - hypothesizedMean) * sampleSize < 10) {
-            return "one minus the hypothesized proportion times the sample size is less than 10";
-        }
-    }
-
-    if (testType === 't') {
-        if (sampleSize < 30) {
-            return "the sample size is less than 30";
-        }
-    }
-
-    return null;
-}
-
 function formatConditions(testType: 'z' | 't', hypothesizedMean: number, populationSize: number, sampleSize: number, sampleType: string) {
     const conditions: string[] = [];
 
-    conditions.push(`Random: Sample is stated to be taken randomly`);
+    conditions.push(`Random: Sample is stated to be taken randomly.`);
     conditions.push(populationSize ?
-        `10% Condition: Since ${sampleSize}(10) = ${(sampleSize * 10)} < ${populationSize}, the 10% condition is satisfied` :
-        `10% Condition: It is reasonable to assume there are more than ${sampleSize}(10) = ${(sampleSize * 10)} ${sampleType}s`
+        sampleSize * 10 < populationSize ? `10% Condition: Since ${sampleSize}(10) = ${(sampleSize * 10)} < ${populationSize}, the 10% condition is satisfied.` :
+            `10% Condition: Since ${sampleSize}(10) = ${(sampleSize * 10)} >= ${populationSize}, the 10% condition is not satisfied. However, we will proceed with caution.` :
+        `10% Condition: It is reasonable to assume there are more than ${sampleSize}(10) = ${(sampleSize * 10)} ${sampleType}s.`
     );
-    conditions.push(testType === 'z' ?
-        `Normality: Since np = ${sampleSize}(${hypothesizedMean}) = ${(sampleSize * hypothesizedMean)} >= 10 & nq = ${sampleSize}(${(1 - hypothesizedMean)}) = ${(sampleSize * (1 - hypothesizedMean))} >= 10, it is reasonable to assume normality` :
-        `Normality: Due to the central limit theorem, since the sample size = ${sampleSize} >= 30, it is reasonable to assume normality`
+    conditions.push(
+        testType === 'z' ?
+            hypothesizedMean * sampleSize < 10 && (1 - hypothesizedMean) * sampleSize < 10 ? `Normality: Since np = ${sampleSize}(${hypothesizedMean}) = ${(sampleSize * hypothesizedMean)} < 10 & nq = ${sampleSize}(${(1 - hypothesizedMean)}) = ${(sampleSize * (1 - hypothesizedMean))} < 10, it is not reasonable to assume normality. However, we will proceed with caution.` :
+                hypothesizedMean * sampleSize < 10 ? `Normality: Since nq = ${sampleSize}(${(1 - hypothesizedMean)}) = ${(sampleSize * (1 - hypothesizedMean))} >= 10, but np = ${sampleSize}(${hypothesizedMean}) = ${(sampleSize * hypothesizedMean)} < 10, it is not reasonable to assume normality. However, we will proceed with caution.` :
+                    (1 - hypothesizedMean) * sampleSize < 10 ? `Normality: Since np = ${sampleSize}(${hypothesizedMean}) = ${(sampleSize * hypothesizedMean)} >= 10, but nq = ${sampleSize}(${(1 - hypothesizedMean)}) = ${(sampleSize * (1 - hypothesizedMean))} < 10, it is not reasonable to assume normality. However, we will proceed with caution.` :
+                        `Normality: Since np = ${sampleSize}(${hypothesizedMean}) = ${(sampleSize * hypothesizedMean)} >= 10 & nq = ${sampleSize}(${(1 - hypothesizedMean)}) = ${(sampleSize * (1 - hypothesizedMean))} >= 10, it is reasonable to assume normality.` :
+            sampleSize >= 30 ? `Normality: Due to the central limit theorem, since the sample size = ${sampleSize} >= 30, it is reasonable to assume normality.` :
+                `Normality: Due to the central limit theorem, since the sample size = ${sampleSize} <= 30, it is not reasonable to assume normality. However, we will proceed with caution.`
     );
 
     return conditions;
