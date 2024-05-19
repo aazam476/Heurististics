@@ -2,9 +2,7 @@ import Link from "next/link"
 
 const links = [
     { name: '1-Sample Z Test', href: '/z1' },
-    { name: '1-Sample T Test', href: '/t1' },
-    { name: '2-Sample Z Test', href: '/z2' },
-    { name: '2-Sample T Test', href: '/t2' },
+    { name: '1-Sample T Test', href: '/t1' }
   ]
   
   export default function Home() {
@@ -30,11 +28,11 @@ const links = [
           <div className="mx-auto max-w-2xl lg:mx-0">
             <h2 className="text-4xl font-bold tracking-tight text-white sm:text-6xl">Welcome to the Stat Test Runner!</h2>
             <p className="mt-12 text-lg leading-8 text-gray-300">
-              Click one of the following links to generate a completed test document
+              Click one of the following links and enter the relevant values to create a completed test PDF!
             </p>
           </div>
           <div className="mx-auto my-10 max-w-2xl lg:mx-0 lg:max-w-none">
-            <div className="grid grid-cols-1 gap-x-16 gap-y-12 text-lg font-semibold leading-7 text-white sm:grid-cols-2 md:flex lg:gap-x-10">
+            <div className="grid grid-cols-1 gap-x-24 gap-y-12 text-lg font-semibold leading-7 text-white sm:grid-cols-2 md:flex lg:gap-x-10">
               {links.map((link) => (
                 <Link key={link.name} href={link.href}>
                   {link.name} <span aria-hidden="true">&rarr;</span>

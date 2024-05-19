@@ -1,6 +1,4 @@
-import { Source } from "postcss";
-import { IOneSampPayload } from "../templates/OneSample";
-
+import { Source } from "postcss";import { IOneSampPayload } from "../templates/OneSample";
 export default async function OneSampleApiCall(payload:IOneSampPayload, testType:string) {
 
     let url = `https://heurististics.azamserver.com/api/oneSampleTest/${testType}Test/`
@@ -8,38 +6,25 @@ export default async function OneSampleApiCall(payload:IOneSampPayload, testType
     let headers = new Headers()
     headers.append('Content-Type', 'application/json')
     headers.append('Accept', 'application/json')
+    headers.append('Origin', 'localhost:3000')
 
-    let body = JSON.stringify(payload)
+    let data
 
-    if (testType === 'z')
-    {
-        body = body.replace('sampleStdDev', 'populationStdDev')
+    if (testType === 'z') {
+        const { sampleStdDev, ...rest } = payload;
+        data = { populationStdDev: sampleStdDev, ...rest };
     }
+    else
+        data = payload
 
-    let newPayload = JSON.parse(body) 
-
-    newPayload = {
-        "hypothesizedMean": 0.47,
-        "sampleMean": 0.44,
-        "sampleSize": 200,
-        "populationStdDev": 0.1,
-        "populationSize": 2001,
-        "nullHypothesis": "null",
-        "alternativeHypothesis": "alt",
-        "alternativeHypothesisType": ">"
-    }
-
-    let data = new FormData()
-    data.append("json",JSON.stringify(newPayload))
+    let body = JSON.stringify(data)
 
     console.log(`Request Body: ${body}`)
 
-    const raw = await fetch(url, {
-        mode: 'no-cors',
+    return await fetch(url, {
+        mode: 'cors',
         method: 'POST',
         headers: headers,
-        body: data
+        body:  body
     })
-    const response = await raw.json()
-    console.log(response)
 }

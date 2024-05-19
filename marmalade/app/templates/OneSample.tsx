@@ -7,7 +7,7 @@ import DropDown from "./DropDown";
 import PdfViewer from "./PdfViewer";
 import Link from "next/link";
 import ErrorBar from "./ErrorBar";
-import ApiCall from "../scripts/ApiCall";
+import OneSampleApiCall from "../scripts/ApiCall";
 
 export interface IOneSampPayload {
     hypothesizedMean: number,
@@ -89,20 +89,39 @@ export default function OneSample({testType}:{testType:string}) {
         event: ChangeEvent<HTMLSelectElement>, payload: IOneSampPayload) => {
             payload.alternativeHypothesisType = event.target.value;
         }
+
+    const validateNumbers = (numbers:number[]) : boolean => {
+        let NaNcheck = numbers.every((val) => !isNaN(val))
+        let zeroCheck = payload.sampleSize > 0 && payload.populationSize > 0 && payload.sampleStdDev > 0 && payload.sampleMean >= 0 && payload.hypothesizedMean >= 0
+        let intCheck = Number.isInteger(payload.sampleSize) && Number.isInteger(payload.populationSize)
+        if (testType === 'z')
+            return NaNcheck && zeroCheck&& intCheck && payload.sampleMean <= 1 && payload.hypothesizedMean <= 1 && payload.sampleStdDev <= 1
+        return NaNcheck && zeroCheck && intCheck
+
+    }
     
-    const base64STR="JVBERi0xLjMKJf////8KNyAwIG9iago8PAovVHlwZSAvUGFnZQovUGFyZW50IDEgMCBSCi9NZWRpYUJveCBbMCAwIDYxMiA3OTJdCi9Db250ZW50cyA1IDAgUgovUmVzb3VyY2VzIDYgMCBSCj4+CmVuZG9iago2IDAgb2JqCjw8Ci9Qcm9jU2V0IFsvUERGIC9UZXh0IC9JbWFnZUIgL0ltYWdlQyAvSW1hZ2VJXQovRm9udCA8PAovRjIgOCAwIFIKPj4KPj4KZW5kb2JqCjUgMCBvYmoKPDwKL0xlbmd0aCA3MTUKL0ZpbHRlciAvRmxhdGVEZWNvZGUKPj4Kc3RyZWFtCnicrVa7jhsxDOz9FfqBKBRJDSXA2CJAUqQL4C5I4eyjuyL/3wTU7vpsK8jdBoGbtSBSM6MhqRQoUPiQAgWrHMaX069T6tY+XbbFFIyDpRQLabi8nD5+4ZA4XJbT97MWIbky6WwZI8Yh0I9w+Xr6fDl9e0dW1BTVcz1n1eRZh5BzOGvCaHo0c6YILs+Zsw2hUDgjM5mhOmYmyya+gsSEBTMyTyZImIwwtr1XnkyRTUyZUAEmU5QWBSyeB8sQOIdzyzvDmCAtm6Kaovq3iZ9i3OImZFO5HmUmFFnQMWOkdtaCybXLD/hR/WRHj+Q8oA3/woSGxdfxcwipaYOZye7yYbR6FCXVWLTziyQhzkzaKbNhduXaXQhLFuLSIiqTTPuaEJOMt3+Jx9e72PP3yr9q0BSoJsAQ2PlW1+Mgv1xq1Nw7d8ZijAkJo59t9ZkXZqN7NlyEeJZ0z5FJ5vbtbIjRotIfoupd1HPc2BjrjTcjI9mqSwJvvm4eOModNVJnQE9uYtlt7YCfhTh6CJfI1tv8ylMWv14n5OJyeSxVP9+ty8QTE8oQvCarEZbVJSarIreNlYmXPtFaLc1FXrGupCJvNQ7U1UertzzexJKx6WMev3u7InPlwxKQxVK6GmJ66+ce4LI5pckgLCr5lenmrAfU2/7jOLVY1NrVwvtwirmPhcRvtYpKalWtwkLtfzmKRhGN+s5PPBnW23NTWt7tI2mzyr1lBQpwebSb19RaWa1eNzWFjyJkREmdtd9xo39B+raO/ws95Vj5kCvXDsWzC+k+FJHc3Fbdh0IiYpLFfO467oOIBDmmDtB907V/ALEOGext19stSbOAGdYRk7ZBmXFFRnsa3B4F24OIZ2+vqYRzXpuP78arney2ujfqo+RVo2ln93UADkFpa1auxP4suW9i/hjYVWrDoPVwg+2PnYYwtUHSHmI8PyD8DQKtLkEKZW5kc3RyZWFtCmVuZG9iagoxMCAwIG9iagooUERGS2l0KQplbmRvYmoKMTEgMCBvYmoKKFBERktpdCkKZW5kb2JqCjEyIDAgb2JqCihEOjIwMjQwNTE4MDAxMTQzWikKZW5kb2JqCjkgMCBvYmoKPDwKL1Byb2R1Y2VyIDEwIDAgUgovQ3JlYXRvciAxMSAwIFIKL0NyZWF0aW9uRGF0ZSAxMiAwIFIKPj4KZW5kb2JqCjggMCBvYmoKPDwKL1R5cGUgL0ZvbnQKL0Jhc2VGb250IC9UaW1lcy1Sb21hbgovU3VidHlwZSAvVHlwZTEKL0VuY29kaW5nIC9XaW5BbnNpRW5jb2RpbmcKPj4KZW5kb2JqCjQgMCBvYmoKPDwKPj4KZW5kb2JqCjMgMCBvYmoKPDwKL1R5cGUgL0NhdGFsb2cKL1BhZ2VzIDEgMCBSCi9OYW1lcyAyIDAgUgo+PgplbmRvYmoKMSAwIG9iago8PAovVHlwZSAvUGFnZXMKL0NvdW50IDEKL0tpZHMgWzcgMCBSXQo+PgplbmRvYmoKMiAwIG9iago8PAovRGVzdHMgPDwKICAvTmFtZXMgWwpdCj4+Cj4+CmVuZG9iagp4cmVmCjAgMTMKMDAwMDAwMDAwMCA2NTUzNSBmIAowMDAwMDAxMzM4IDAwMDAwIG4gCjAwMDAwMDEzOTUgMDAwMDAgbiAKMDAwMDAwMTI3NiAwMDAwMCBuIAowMDAwMDAxMjU1IDAwMDAwIG4gCjAwMDAwMDAyMDggMDAwMDAgbiAKMDAwMDAwMDExOSAwMDAwMCBuIAowMDAwMDAwMDE1IDAwMDAwIG4gCjAwMDAwMDExNTYgMDAwMDAgbiAKMDAwMDAwMTA4MSAwMDAwMCBuIAowMDAwMDAwOTk1IDAwMDAwIG4gCjAwMDAwMDEwMjAgMDAwMDAgbiAKMDAwMDAwMTA0NSAwMDAwMCBuIAp0cmFpbGVyCjw8Ci9TaXplIDEzCi9Sb290IDMgMCBSCi9JbmZvIDkgMCBSCi9JRCBbPDY2Y2EwZDQ1YTc5MmJiMTFjNWE5NjM1OTI3NzY2ODQ0PiA8NjZjYTBkNDVhNzkyYmIxMWM1YTk2MzU5Mjc3NjY4NDQ+XQo+PgpzdGFydHhyZWYKMTQ0MgolJUVPRgo="
+    const handleSuccess = (value:Response) => value.json().then((data:{pdf:string}) => modifyPdfInfo(data.pdf))
 
+    const handleFaliure = (value:Response) => { console.log('failed'); modifyError(`An Error Occured\t${JSON.stringify(value)}`) }
 
-    const handleOutput = (
+    const handleOutput = async (
         event: any) => {
             let arr = Object.values(payload)
             let numbers = (arr.filter((obj) => typeof obj === "number") as number[])
-            let validNums:boolean = numbers.every((val) => !isNaN(val)) && payload.sampleSize != 0 && payload.populationSize != 0 && payload.sampleStdDev != 0
+
+            // Every number is not NaN, certain numbers cannot be <= 0, certian numbers must be ints, certain numbers have to be [0,1] for prop z test
+            let validNums:boolean = validateNumbers(numbers)
+            
+            // Every string is not empty
             let validText:boolean = arr.filter((obj) => typeof obj === "string").every((val) => !!val)
 
             if (validNums && validText) {
-                ApiCall(payload, testType)
-                modifyPdfInfo(base64STR)
+                let response = await OneSampleApiCall(payload, testType)
+                
+                if (response.ok)
+                    handleSuccess(response)
+                else
+                    handleFaliure(response)
             }
             else
                 modifyError("Invalid Inputs. "+(validText ? "Text is valid, " : "Text is invalid, ")+(validNums ? "Numbers are valid." : "Numbers are invalid."))
@@ -111,7 +130,8 @@ export default function OneSample({testType}:{testType:string}) {
     return (
 
         <div className="relative isolate overflow-hidden bg-gray-900 py-12 scroll-smooth snap-normal">
-            <header className="px-24 font-bold tracking-tight text-white text-6xl text-pretty decoration-zinc-900">Welcome to the One Sample {testType}-Test!</header>
+            <header className="px-24 font-bold tracking-tight text-white text-6xl text-pretty decoration-zinc-900">
+                Welcome to the One {testType === 'z' ? 'Prop' : 'Sample'} {testType}-Test!</header>
             <div
             className="-hidden absolute w-screen h-screen mr-10 sm:flex transform-gpu sm:blur-3xl z-0"
             aria-hidden="true"
@@ -122,8 +142,8 @@ export default function OneSample({testType}:{testType:string}) {
             </div>
             <div className="flex flex-wrap px-20 pt-20 size-screen w-screen">
                 <NumberInputBar payload = {payload} modifyPayload={modHypothesisMean} label={`Hypothesis ${testType === 'z' ? "Proportion" : "Mean"}`} placeholder={payload.hypothesizedMean}></NumberInputBar>
-                <NumberInputBar payload = {payload} modifyPayload={modSampleMean} label="Sample Mean" placeholder={payload.sampleMean}></NumberInputBar>
-                <NumberInputBar payload = {payload} modifyPayload={modStdDev} label="Standard Deviation" placeholder={payload.sampleStdDev}></NumberInputBar>
+                <NumberInputBar payload = {payload} modifyPayload={modSampleMean} label={`Sample ${testType === 'z' ? "Proportion" : "Mean"}`} placeholder={payload.sampleMean}></NumberInputBar>
+                <NumberInputBar payload = {payload} modifyPayload={modStdDev} label={`${testType === 'z' ? "Population" : "Sample"} Standard Deviation`} placeholder={payload.sampleStdDev}></NumberInputBar>
                 <NumberInputBar payload = {payload} modifyPayload={modSampleSize} label="Sample Size" placeholder={payload.sampleSize}></NumberInputBar>
                 <NumberInputBar payload = {payload} modifyPayload={modPopulationSize} label="Population Size" placeholder={payload.populationSize}></NumberInputBar>
             </div>
