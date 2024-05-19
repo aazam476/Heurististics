@@ -9,3 +9,4 @@ services:
     environment:
       - PORT=3000
       - LOG_LEVEL=debug
+      - CORS_ORIGIN=*

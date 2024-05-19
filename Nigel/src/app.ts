@@ -1,4 +1,5 @@
 import express from 'express';
+import cors from 'cors';
 import morgan from 'morgan';
 import http from 'http';
 import logger from './logger';
@@ -7,6 +8,9 @@ import oneSampleTestRoutes from "./oneSampleTestRoutes";
 async function startServer() {
     try {
         const app = express();
+
+        const corsOrigin = process.env.CORS_ORIGIN || '*';
+        app.use(cors({ origin: corsOrigin }));
 
         const morganFormat = ":remote-addr - :remote-user \":method :url HTTP/:http-version\" :status :res[content-length] \":referrer\" \":user-agent\"";
         app.use(morgan(morganFormat, {
