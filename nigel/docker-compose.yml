@@ -7,6 +7,6 @@ services:
     ports:
       - "3000:3000"
     environment:
-      - PORT=3000
-      - LOG_LEVEL=debug
-      - CORS_ORIGIN=*
+      - API_PORT=3000
+      - API_LOG_LEVEL=debug
+      - API_CORS_ORIGIN=*
