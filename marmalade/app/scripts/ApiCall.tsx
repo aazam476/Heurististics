@@ -6,7 +6,6 @@ export default async function OneSampleApiCall(payload:IOneSampPayload, testType
     let headers = new Headers()
     headers.append('Content-Type', 'application/json')
     headers.append('Accept', 'application/json')
-    headers.append('Origin', 'localhost:3000')
 
     let data
 
