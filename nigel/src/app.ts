@@ -9,7 +9,7 @@ async function startServer() {
     try {
         const app = express();
 
-        const corsOrigin = process.env.CORS_ORIGIN || '*';
+        const corsOrigin = process.env.API_CORS_ORIGIN || '*';
         app.use(cors({ origin: corsOrigin }));
 
         const morganFormat = ":remote-addr - :remote-user \":method :url HTTP/:http-version\" :status :res[content-length] \":referrer\" \":user-agent\"";
@@ -23,7 +23,7 @@ async function startServer() {
 
         app.use("/oneSampleTest", oneSampleTestRoutes);
 
-        const port = parseInt(process.env.PORT) || 3000;
+        const port = parseInt(process.env.API_PORT) || 3000;
         return app.listen(port, () => {
             logger.info(`Server is running on port ${port}`);
         });

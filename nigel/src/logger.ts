@@ -1,6 +1,6 @@
 import winston from "winston";
 
-const logLevel = process.env.LOG_LEVEL || 'error';
+const logLevel = process.env.API_LOG_LEVEL || 'error';
 
 const logger = winston.createLogger({
     level: logLevel,
