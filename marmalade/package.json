@@ -6,7 +6,7 @@
     "dev": "next dev",
     "build": "next build",
     "start": "next start",
-    "dockerStart": "next start -p $UI_PORT",
+    "dockerStart": "next start -p $CLIENT_PORT",
     "lint": "next lint"
   },
   "dependencies": {

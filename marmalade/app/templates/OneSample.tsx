@@ -128,7 +128,7 @@ export default function OneSample({testType}:{testType:string}) {
         }
 
     return (
-
+        
         <div className="relative isolate overflow-hidden bg-gray-900 py-12 scroll-smooth snap-normal">
             <header className="px-24 font-bold tracking-tight text-white text-6xl text-pretty decoration-zinc-900">
                 Welcome to the One {testType === 'z' ? 'Prop' : 'Sample'} {testType}-Test!</header>

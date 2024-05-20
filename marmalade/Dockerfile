@@ -10,6 +10,6 @@ COPY . .
 
 RUN npm run build  
 
-ENV UI_PORT 3000
+ENV CLIENT_PORT 3000
 
 CMD ["npm", "run", "dockerStart"]
