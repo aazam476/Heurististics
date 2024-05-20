@@ -1,0 +1,10 @@
+name: heurististics
+
+services:
+  ui:
+    build: .
+    restart: unless-stopped
+    ports:
+      - "3001:3001"
+    environment:
+      - UI_PORT=3001
