@@ -1,0 +1,7 @@
+.DS_Store
+node_modules
+.dockerignore
+.gitignore
+api.yaml
+docker-compose.yml
+Dockerfile

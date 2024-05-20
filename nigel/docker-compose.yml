@@ -1,0 +1,12 @@
+name: heurististics
+
+services:
+  app:
+    build: .
+    restart: unless-stopped
+    ports:
+      - "3000:3000"
+    environment:
+      - API_PORT=3000
+      - API_LOG_LEVEL=debug
+      - API_CORS_ORIGIN=*

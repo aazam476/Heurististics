@@ -1,0 +1,154 @@
+openapi: 3.0.3
+info:
+  version: 1.0.0
+  title: Heurististics
+  license:
+    name: GPL-3.0
+servers:
+  - url: 'https://heurististics.azamserver.com/api'
+paths:
+  /oneSampleTest/zTest:
+    post:
+      summary: Create One Sample Z-Test PDF
+      requestBody:
+        required: true
+        content:
+          application/json:
+            schema:
+              $ref: '#/components/schemas/oneSampleZTestRequest'
+      responses:
+        '200':
+          description: Successful operation
+          content:
+            application/json:
+              schema:
+                $ref: '#/components/schemas/response'
+        '400':
+          description: Faulty request, check JSON body
+        '500':
+          description: Internal server error
+  /oneSampleTest/tTest:
+    post:
+      summary: Create One Sample T-Test PDF
+      requestBody:
+        required: true
+        content:
+          application/json:
+            schema:
+              $ref: '#/components/schemas/oneSampleTTestRequest'
+      responses:
+        '200':
+          description: Successful operation
+          content:
+            application/json:
+              schema:
+                $ref: '#/components/schemas/response'
+        '400':
+          description: Faulty request, check JSON body
+        '500':
+          description: Internal server error
+
+components:
+  schemas:
+    oneSampleZTestRequest:
+      type: object
+      properties:
+        hypothesizedMean:
+          description: Hypothesized proportion (p not)
+          type: number
+        sampleMean:
+          description: Mean of sample
+          type: number
+        sampleSize:
+          description: Size of sample
+          type: number
+        sampleType:
+          description: Description of what the sample is (ex. apples)
+          type: string
+        populationStdDev:
+          description: Standard deviation of population
+          type: integer
+        populationSize:
+          description: Size of population
+          type: integer
+        nullHypothesis:
+          description: Null hypothesis
+          type: string
+        alternativeHypothesis:
+          description: Alternative hypothesis
+          type: string
+        alternativeHypothesisType:
+          description: Type of alternative hypothesis
+          type: string
+          enum:
+            - ≠
+            - <
+            - >
+      required:
+        - hypothesizedProportion
+        - sampleMean
+        - sampleSize
+        - populationStdDev
+        - nullHypothesis
+        - alternativeHypothesis
+        - alternativeHypothesisType
+      oneOf:
+        - required:
+            - sampleType
+        - required:
+            - populationSize
+    oneSampleTTestRequest:
+      type: object
+      properties:
+        hypothesizedMean:
+          description: Hypothesized proportion (theta)
+          type: number
+        sampleMean:
+          description: Mean of sample
+          type: number
+        sampleStdDev:
+          description: Standard deviation of sample
+          type: number
+        sampleSize:
+          description: Size of sample
+          type: integer
+        sampleType:
+          description: Description of what the sample is (ex. apples)
+          type: string
+        populationSize:
+          description: Size of population
+          type: integer
+        nullHypothesis:
+          description: Null hypothesis
+          type: string
+        alternativeHypothesis:
+          description: Alternative hypothesis
+          type: string
+        alternativeHypothesisType:
+          description: Type of alternative hypothesis
+          type: string
+          enum:
+            - ≠
+            - <
+            - >
+      required:
+        - hypothesizedMean
+        - sampleMean
+        - sampleStdDev
+        - sampleSize
+        - sampleType
+        - populationSize
+        - nullHypothesis
+        - alternativeHypothesis
+        - alternativeHypothesisType
+      oneOf:
+        - required:
+            - sampleType
+        - required:
+            - populationSize
+    response:
+      type: object
+      properties:
+        pdf:
+          description: Base64 string of generated PDF
+          type: string
